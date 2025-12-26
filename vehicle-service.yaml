@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle-service
+  namespace: automotive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vehicle-service
+  template:
+    metadata:
+      labels:
+        app: vehicle-service
+    spec:
+      containers:
+        - name: vehicle-service
+          image: erdigvijay/devops_repo:vehicle-service-latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://admin:admin123@mongo:27017/vehicledb?authSource=admin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vehicle-service
+  namespace: automotive
+spec:
+  selector:
+    app: vehicle-service
+  ports:
+    - port: 8081
+      targetPort: 8081
